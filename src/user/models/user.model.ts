@@ -12,11 +12,19 @@ const UserSchema = new Schema(
     },
 );
 
+UserSchema.virtual('posts', {
+    ref: 'Post',
+    localField: '_id',
+    foreignField: 'user',
+    justOne: false,
+})
+
 export { UserSchema };
 
 export interface User extends Document {
     name: string;
     email: string;
     password: string;
+
 
 }

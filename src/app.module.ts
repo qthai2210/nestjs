@@ -7,6 +7,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { UserModule } from './user/user.module';
 import { APP_FILTER } from '@nestjs/core';
 import { ExceptionLoggerFilter } from './utils/exceptionLogger.filter';
+import { MediaModule } from './media/media.module';
 
 @Module({
 
@@ -17,6 +18,7 @@ import { ExceptionLoggerFilter } from './utils/exceptionLogger.filter';
     },),
     PostModule,
     UserModule,
+    MediaModule,
   ],
   controllers: [AppController],
   providers: [

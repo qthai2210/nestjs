@@ -5,6 +5,8 @@ export class CreatePostDto {
     title: string;
     description: string;
     content: string;
+    user: any;
+    categories: [string];
 
 }
 
