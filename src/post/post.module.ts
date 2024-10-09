@@ -11,23 +11,33 @@ import { CategoryController } from './controller/category.controller';
 import { MediaController } from 'src/media/controller/media.controller';
 import { MediaRepository } from 'src/media/repositories/media.repository';
 import { MediaService } from 'src/media/services/media.service';
+import { UserModule } from 'src/user/user.module';
+import { CqrsModule } from '@nestjs/cqrs';
+import { CreatePostHandler } from './handler/createPost.handler';
+import { GetPostHandler } from './handler/getPost.handler';
 
 
 @Module({
-  imports: [MongooseModule.forFeature([
-    {
-      name: 'Post',
-      schema: PostSchema
-    },
-    {
-      name: 'Category',
-      schema: CategorySchema
-    }
+  imports:
+    [MongooseModule.forFeature(
+      [
+        {
+          name: 'Post',
+          schema: PostSchema
+        },
+        {
+          name: 'Category',
+          schema: CategorySchema
+        }
 
-  ],),],
+      ],
+    ),
+      UserModule,
+      CqrsModule,
+    ],
   controllers: [PostController, CategoryController],
   providers: [PostService, PostRepository, CategoryRepository,
-    CategoryService
+    CategoryService, CreatePostHandler, GetPostHandler
   ],
   //exports: [PostRepository],
 
