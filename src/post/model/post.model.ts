@@ -13,14 +13,16 @@ const PostSchema = new Schema(
             type: Schema.Types.ObjectId,
             ref: 'User',
         },
+        tags: [String],
+        numbers: [Number],
         categories: [{ type: Schema.Types.ObjectId, ref: 'Category' }],
     },
-    // {
-    //     timestamps: true,
-    //     // timestamps: { createdAt
-    //     //     : 'created_at', updatedAt: 'updated_at' }
-    //     collection: 'posts'
-    // }
+    {
+        timestamps: true,
+        // timestamps: { createdAt
+        //     : 'created_at', updatedAt: 'updated_at' }
+        collection: 'posts'
+    }
 
 );
 
@@ -31,5 +33,7 @@ export interface Post extends Document {
     description: string;
     content: string;
     user: User;
+    tags: [string];
+    numbers: [number];
     categories: [Category];
 }

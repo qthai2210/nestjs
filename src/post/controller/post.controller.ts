@@ -12,8 +12,8 @@ export class PostController {
     constructor(private readonly postService: PostService) { }
 
     @Get()
-    getAllPost() {
-        return this.postService.getAllPost();
+    getAllPost(@Query() { page, limit, start }) {
+        return this.postService.getAllPost(page, limit, start);
     }
     @Get(':id')
     //@UseFilters(ExceptionLoggerFilter)
@@ -54,5 +54,8 @@ export class PostController {
     async getByCategories(@Query('category_ids') category_ids) {
         return await this.postService.getByCategories(category_ids);
     }
-
+    @Get('get/array')
+    async getByArray() {
+        return await this.postService.getByArray();
+    }
 }

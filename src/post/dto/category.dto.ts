@@ -12,5 +12,4 @@ export class UpdateCategoryDto {
     @IsString() title: string;
     description: string;
     content: string;
-
 }
