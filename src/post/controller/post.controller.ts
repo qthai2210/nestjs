@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Post, Put, Query, Req, UseFilters, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Inject, Param, Post, Put, Query, Req, UseFilters, UseGuards, UseInterceptors } from '@nestjs/common';
 
 import { PostService } from '../services/post.service';
 import { CreatePostDto, UpdatePostDto } from '../dto/post.dto';
@@ -9,15 +9,39 @@ import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import { CreatePostCommand } from '../commands/createPost.command';
 import { GetPostQuery } from '../queries/getPost.query';
 
+import { CACHE_MANAGER, CacheInterceptor, CacheTTL } from '@nestjs/cache-manager';
+import { Cache } from 'cache-manager';
 
+@UseInterceptors(CacheInterceptor)
 @Controller('post')
 export class PostController {
     constructor(private readonly postService: PostService,
 
         private readonly commandBus: CommandBus,
         private readonly queryBus: QueryBus,
+        @Inject(CACHE_MANAGER) private cacheManager: Cache,
     ) { }
+    @Get(':id/get-with-cache')
+    @UseInterceptors(CacheInterceptor)
+    @CacheTTL(300) // Cache responses for 5 minutes (300 seconds)
+    async getPostDetailWithCache(@Param('id') id: string) {
+        console.log('Run here');
+        return (await this.postService.getPostById(id)).toJSON();
+    }
 
+    @Get('cache/demo/set-cache')
+    @CacheTTL(300)
+    async demoSetCache() {
+        await this.cacheManager.set('newnet', 'hello world');// Cache the post
+        await this.cacheManager.set('newnet1', 'hello world1');// Cache the post
+        await this.cacheManager.set('newnet2', 'hello world1');// Cache the post
+
+        return true;
+    }
+    @Get('cache/demo/get-cache')
+    async demoGetCache() {
+        return await this.cacheManager.get('newnet'); // Get the post
+    }
     @Get()
     getAllPost(@Query() { page, limit, start }) {
         return this.postService.getAllPost(page, limit, start);

@@ -14,7 +14,11 @@ import { SubscriberModule } from './subscriber/subscriber.module';
 
 
   imports: [
-    ConfigModule.forRoot(),
+    ConfigModule.forRoot(
+      {
+        isGlobal: true,
+      }
+    ),
     MongooseModule.forRoot(process.env.MONGODB_URL, {
     },),
     PostModule,
@@ -29,6 +33,7 @@ import { SubscriberModule } from './subscriber/subscriber.module';
     //   provide: APP_FILTER,
     //   useClass: ExceptionLoggerFilter,
     // }
+
   ],
 })
 export class AppModule { }

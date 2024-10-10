@@ -15,6 +15,10 @@ import { UserModule } from 'src/user/user.module';
 import { CqrsModule } from '@nestjs/cqrs';
 import { CreatePostHandler } from './handler/createPost.handler';
 import { GetPostHandler } from './handler/getPost.handler';
+import { CacheModule, CacheStoreFactory } from '@nestjs/cache-manager';
+import { ConfigModule } from '@nestjs/config';
+import { ConfigService } from '@nestjs/config';
+import { redisStore } from 'cache-manager-redis-store';
 
 
 @Module({
@@ -28,12 +32,38 @@ import { GetPostHandler } from './handler/getPost.handler';
         {
           name: 'Category',
           schema: CategorySchema
-        }
+        },
 
       ],
     ),
       UserModule,
       CqrsModule,
+    CacheModule.registerAsync(
+
+      {
+
+        imports: [ConfigModule],
+        inject: [ConfigService],
+        useFactory: async (configService: ConfigService) => ({
+
+
+
+          // is global : true for multi server
+          isGlobal: true,
+          url: configService.get('REDIS_URL'),
+
+          store: redisStore as unknown as CacheStoreFactory,
+          host: configService.get('REDIS_HOST'),
+          port: configService.get('REDIS_PORT'),
+          // username: configService.get('REDIS_USERNAME'),
+          // password: configService.get('REDIS_PASSWORD'),
+
+
+
+        }),
+
+
+      })
     ],
   controllers: [PostController, CategoryController],
   providers: [PostService, PostRepository, CategoryRepository,
