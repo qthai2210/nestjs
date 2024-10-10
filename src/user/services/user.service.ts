@@ -3,6 +3,7 @@ import { UserRepository } from '../repositories/user.repository';
 
 import * as bcrypt from 'bcrypt';
 import { CreateUserDto, LoginUserDto } from '../dto/user.dto';
+import { MailerService } from '@nestjs-modules/mailer';
 
 
 @Injectable()
@@ -11,6 +12,7 @@ export class UserService {
         private readonly userRepository: UserRepository,
         // @InjectQueue('send-mail')
         // private sendMail: Queue,
+        private readonly mailerService: MailerService,
     ) { }
 
     async create(userDto: CreateUserDto) {
@@ -23,7 +25,7 @@ export class UserService {
         if (userInDb) {
             throw new HttpException('User already exists', HttpStatus.BAD_REQUEST);
         }
-        // await this.sendMail.add(
+        // await this.mailerService.add(
         //     'register',
         //     {
         //         to: userDto.email,
@@ -33,14 +35,14 @@ export class UserService {
         //         removeOnComplete: true,
         //     },
         // );
-        // await this.mailerService.sendMail({
-        //   to: userDto.email,
-        //   subject: 'Welcome to my website',
-        //   template: './welcome',
-        //   context: {
-        //     name: userDto.name,
-        //   },
-        // });
+        await this.mailerService.sendMail({
+            to: userDto.email,
+            subject: 'Welcome to my website',
+            template: './welcome',
+            context: {
+                name: userDto.name,
+            },
+        });
 
         return await this.userRepository.create(userDto);
     }
